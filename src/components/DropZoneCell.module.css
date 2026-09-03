@@ -1,0 +1,380 @@
+/* ==============================================================
+   EJTÉSI ZÓNA CELLA (DropZoneCell)
+============================================================== */
+.dropZone {
+  padding: 0.35rem;
+  min-height: 80px;
+  transition: background 0.2s;
+}
+
+.dropZone:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Validációs állapotok (drag and drop) */
+.possibleTarget {
+  background-color: rgba(16, 185, 129, 0.1);
+  outline: 1px solid rgba(16, 185, 129, 0.4);
+  outline-offset: -1px;
+}
+
+.notPossible {
+  opacity: 0.4;
+}
+
+.dropValid {
+  background-color: rgba(16, 185, 129, 0.3);
+  outline: 2px dashed var(--success-color);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.dropInvalid {
+  background-color: rgba(239, 68, 68, 0.2);
+  outline: 2px dashed var(--danger-color);
+  outline-offset: -2px;
+  cursor: not-allowed;
+}
+
+/* Cella tartalom */
+.cellContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 60px;
+}
+
+/* Beosztott diák elem */
+.enrolledStudent {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.enrolledStudentDragging {
+  opacity: 0.35;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: transparent !important;
+}
+
+.enrolledStudentDragging * {
+  visibility: hidden;
+}
+
+.studentName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.classIdLabel {
+  color: var(--text-secondary);
+  font-size: 0.85em;
+  margin-left: 4px;
+}
+
+/* Eltávolítás gomb */
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeBtn:hover {
+  color: white;
+}
+
+/* Zárolt cellák */
+.blockedCell {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.03) 10px,
+      rgba(255, 255, 255, 0.03) 20px);
+}
+
+.blockedReason {
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 10px 0;
+  word-break: break-word;
+}
+
+/* Speciális zárolási típusok */
+.blockedLunch {
+  background-color: rgba(245, 158, 11, 0.12);
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 10px,
+      rgba(245, 158, 11, 0.06) 10px,
+      rgba(245, 158, 11, 0.06) 20px);
+}
+
+.blockedLunch .blockedReason {
+  color: #fbbf24;
+}
+
+.blockedMeeting {
+  background-color: rgba(99, 102, 241, 0.12);
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 10px,
+      rgba(99, 102, 241, 0.06) 10px,
+      rgba(99, 102, 241, 0.06) 20px);
+}
+
+.blockedMeeting .blockedReason {
+  color: #a5b4fc;
+}
+
+.blockedDuty {
+  background-color: rgba(16, 185, 129, 0.12);
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 10px,
+      rgba(16, 185, 129, 0.06) 10px,
+      rgba(16, 185, 129, 0.06) 20px);
+}
+
+.blockedDuty .blockedReason {
+  color: #6ee7b7;
+}
+
+.blockedSubstitute {
+  background-color: rgba(244, 63, 94, 0.12);
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 10px,
+      rgba(244, 63, 94, 0.06) 10px,
+      rgba(244, 63, 94, 0.06) 20px);
+}
+
+.blockedSubstitute .blockedReason {
+  color: #fda4af;
+}
+
+/* Tantárgy tipp (húzás közben) */
+.subjectHint {
+  font-size: 0.75rem;
+  color: var(--success-color);
+  background: rgba(16, 185, 129, 0.15);
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-weight: 500;
+  font-style: italic;
+  animation: fadeIn 0.3s ease;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.placeholderHint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Zárolás mód kurzor */
+.lockModeActive {
+  cursor: pointer;
+}
+
+.validationTooltip {
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  z-index: 100;
+  white-space: normal;
+  width: 160px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+.validationTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(239, 68, 68, 0.95) transparent transparent transparent;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.warningTooltip {
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(217, 119, 6, 0.95);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  z-index: 100;
+  white-space: normal;
+  width: 170px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+.warningTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(217, 119, 6, 0.95) transparent transparent transparent;
+}
+
+.groupBadgeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.groupBadge {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.groupBadge:hover {
+  background: rgba(99, 102, 241, 0.35);
+  color: #ffffff;
+}
+
+.groupBadgeEditContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.groupBadgeInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.groupBadgeInput {
+  width: 55px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid var(--accent-color, #6366f1);
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  outline: none;
+}
+
+.groupBadgeInputError {
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.badgeSaveBtn, .badgeResetBtn {
+  background: transparent;
+  border: none;
+  color: #a5b4fc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 3px;
+  transition: color 0.15s;
+}
+
+.badgeSaveBtn:hover {
+  color: #10b981;
+}
+
+.badgeResetBtn:hover {
+  color: #ef4444;
+}
+
+.badgeErrorHint {
+  font-size: 0.75rem;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 6px 8px;
+  border-radius: 6px;
+  line-height: 1.3;
+  margin-top: 4px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}

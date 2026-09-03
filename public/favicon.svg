@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Színátmenet a háttérnek -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" /> <!-- Indigo 500 -->
+      <stop offset="100%" stop-color="#4f46e5" /> <!-- Indigo 600 -->
+    </linearGradient>
+    <!-- Színátmenet a kiemelésnek -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" /> <!-- Amber 500 -->
+      <stop offset="100%" stop-color="#d97706" /> <!-- Amber 600 -->
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Háttér pajzs lekerekítve -->
+  <rect width="440" height="440" x="36" y="36" rx="96" fill="url(#bgGrad)" filter="url(#shadow)" />
+
+  <!-- Naptár Fejléc és alap -->
+  <rect width="280" height="240" x="116" y="140" rx="32" fill="#ffffff" />
+  <rect width="280" height="70" x="116" y="140" rx="20" fill="#e0e7ff" />
+
+  <!-- Naptár akasztók -->
+  <rect width="32" height="64" x="168" y="108" rx="16" fill="#ffffff" />
+  <rect width="32" height="64" x="312" y="108" rx="16" fill="#ffffff" />
+
+  <!-- Naptár rács elemek (kis négyzetek) -->
+  <!-- 1. sor -->
+  <rect width="40" height="40" x="156" y="230" rx="8" fill="#c7d2fe" />
+  <rect width="40" height="40" x="236" y="230" rx="8" fill="#818cf8" />
+  <rect width="40" height="40" x="316" y="230" rx="8" fill="#c7d2fe" />
+  <!-- 2. sor -->
+  <rect width="40" height="40" x="156" y="298" rx="8" fill="#818cf8" />
+  <rect width="40" height="40" x="236" y="298" rx="8" fill="#c7d2fe" />
+  <rect width="40" height="40" x="316" y="298" rx="8" fill="#818cf8" />
+
+  <!-- Automata tervezés csillag / szikra kiemelés a jobb sarokban -->
+  <path d="M 400 80 L 412 110 L 442 110 L 418 128 L 428 158 L 400 140 L 372 158 L 382 128 L 358 110 L 388 110 Z" fill="url(#accentGrad)" />
+  <path d="M 440 180 L 446 195 L 461 195 L 449 204 L 454 219 L 440 210 L 426 219 L 431 204 L 419 195 L 434 195 Z" fill="url(#accentGrad)" transform="scale(0.7) translate(180, 20)" />
+</svg>

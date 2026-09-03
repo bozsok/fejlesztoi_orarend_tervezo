@@ -1,0 +1,106 @@
+/* ==============================================================
+   SZABÁLYZAT MODAL (RulesModal)
+============================================================== */
+
+/* Tabok */
+.tabs {
+  display: flex;
+  gap: 0;
+  padding: 0;
+}
+
+.tabs::before {
+  content: '';
+  width: 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.tabs::after {
+  content: '';
+  flex-grow: 1;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.tabBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 8px 8px 0 0;
+  padding: 0.8rem 1.5rem;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tabBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.tabBtnActive {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  border-bottom: none;
+  font-weight: 600;
+}
+
+/* Tab tartalom háttér */
+.tabbedContent {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Szabály szekciók */
+.ruleSection {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.ruleSection h3 {
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.ruleSection ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.ruleSection li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.ruleSection li:last-child {
+  margin-bottom: 0;
+}
+
+.ruleDesc {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.ruleStepDesc {
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.ruleStepsList {
+  padding-left: 1.25rem;
+  margin-top: 0.75rem;
+}

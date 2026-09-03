@@ -1,0 +1,291 @@
+/* ==============================================================
+   DIÁK KIVÁLASZTÓ MODAL (StudentSelectionModal)
+============================================================== */
+
+/* Modal specifikus override-ok */
+.content {
+  max-width: 800px;
+  height: 680px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+/* Kereső sáv */
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.searchWrapper {
+  flex: 1;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  color: var(--text-secondary);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.toolbarBtn {
+  font-size: 0.85rem;
+}
+
+/* Táblázat */
+.tableContainer {
+  flex: 1;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tableHead {
+  position: sticky;
+  top: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  z-index: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cellPadding {
+  padding: 12px;
+}
+
+.cellCenter {
+  text-align: center;
+}
+
+.cellCheckbox {
+  width: 50px;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Sorok */
+.tableRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.tableRowSelected {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* Checkbox */
+.checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.checkboxChecked {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Diák neve a sorban */
+.studentName {
+  font-weight: 500;
+}
+
+/* Osztály badge */
+.classBadge {
+  font-size: 0.8rem;
+}
+
+/* Heti óraszám vezérlő */
+.needsControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.needsBtn {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.needsValue {
+  font-weight: bold;
+  width: 20px;
+  text-align: center;
+}
+
+/* Lábléc */
+.footer {
+  justify-content: space-between;
+}
+
+.footerInfo {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.footerCount {
+  color: white;
+}
+
+.footerActions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Üres állapot */
+.emptyRow {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Gomb és Tooltip a láblécben */
+.submitBtn {
+  white-space: nowrap !important;
+}
+
+.tipTooltipContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tipTooltipContainer:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tipIcon {
+  font-size: 1.1rem;
+}
+
+.tipTooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 42px;
+  right: 0;
+  width: 320px;
+  z-index: 1000;
+  padding: 12px;
+  background: rgba(23, 27, 43, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  white-space: normal; /* A belső szöveg szabadon törhet */
+  text-align: left;
+}
+
+.tipTooltipContainer:hover .tipTooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Osztály gyorsszűrők */
+.classFilters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1rem;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.filterLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.filterTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filterTag {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterTag:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.filterTagActive {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: white !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}

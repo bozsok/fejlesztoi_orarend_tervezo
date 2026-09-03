@@ -1,0 +1,274 @@
+/* ==============================================================
+   APP LAYOUT
+============================================================== */
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1rem;
+  gap: 1rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  height: 70px;
+  z-index: 10;
+  overflow: visible;
+}
+
+.logoArea {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.iconLogo {
+  color: var(--accent-color);
+}
+
+.logoArea h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.actionsArea {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.btnAutoSchedule {
+  background: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* Main Content Layout */
+.mainContent {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+  min-height: 0;
+  /* Fontos a scrollozható gyermekelemekhez */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sidebarHeader h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.studentList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.25rem;
+}
+
+/* Kapacitás jelző */
+.capacityIndicator {
+  margin-bottom: 1.25rem;
+}
+
+.capacityInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.capacityInfoOverloaded {
+  color: #fca5a5;
+}
+
+.capacityPercent {
+  font-weight: bold;
+}
+
+.capacityBarTrack {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.capacityBarFill {
+  height: 100%;
+  width: var(--progress);
+  background: var(--success-color);
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.capacityBarFillOverloaded {
+  background: var(--danger-color);
+}
+
+.capacityWarning {
+  font-size: 0.75rem;
+  color: #fca5a5;
+  margin-top: 6px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Eredmény modal (Automata Tervező) */
+.schedulerOverlay {
+  z-index: 9999;
+}
+
+.schedulerContent {
+  max-width: 450px;
+  text-align: center;
+  padding: 2.5rem 2rem;
+}
+
+.schedulerIcon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.schedulerTitle {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.schedulerBody {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+.schedulerSuccess {
+  color: var(--success-color);
+  font-size: 1.2rem;
+}
+
+.schedulerFailed {
+  font-size: 1.2rem;
+}
+
+.schedulerFailedHighlight {
+  color: #fca5a5;
+}
+
+.schedulerButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.05rem;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+/* Üres állapot */
+.emptyState {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--success-color);
+}
+
+.emptyStateIcon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.emptyStateText {
+  font-weight: bold;
+}
+
+/* Reset (Naptár kiürítés) piros gomb stílusa */
+.btnReset {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  transition: all 0.2s ease;
+}
+
+.btnReset:hover {
+  background: rgba(239, 68, 68, 0.3) !important;
+  color: white !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* Kész tanulók szekció a sidebar alján */
+.completedSection {
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* flex container magasság számoláshoz */
+}
+
+.completedHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.completedIcon {
+  color: var(--success-color);
+}
+
+.completedList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Nyomtatáshoz */
+@media print {
+  .header,
+  .sidebar,
+  .actionsArea {
+    display: none;
+  }
+
+  .appContainer,
+  .mainContent {
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    display: block;
+    overflow: visible;
+  }
+}

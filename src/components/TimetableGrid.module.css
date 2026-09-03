@@ -1,0 +1,224 @@
+/* ==============================================================
+   ÓRAREND RÁCS (TimetableGrid)
+============================================================== */
+.timetableArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+/* Fejléc (cím + jelmagyarázat) */
+.timetableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.teacherHoursBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 14px;
+  border-radius: 20px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.teacherHoursBadge strong {
+  color: var(--accent-hover);
+  font-weight: bold;
+}
+
+.editableTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin: 0;
+  transition: opacity 0.2s;
+}
+
+.editableTitle:hover {
+  opacity: 0.8;
+}
+
+.editIcon {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  color: var(--text-secondary);
+}
+
+.editableTitle:hover .editIcon {
+  opacity: 1;
+}
+
+.titleInput {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent-color);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: inherit;
+  width: 100%;
+  max-width: 400px;
+  outline: none;
+  padding: 0.25rem 0;
+}
+
+/* Jelmagyarázat */
+.legendArea {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.lockBtn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dotGreen {
+  background-color: var(--success-color);
+}
+
+.dotRed {
+  background-color: var(--danger-color);
+}
+
+/* Rács */
+.timetableGrid {
+  flex: 1;
+  display: flex;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tableResponsive {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.timetable {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  table-layout: fixed;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.emptyCorner {
+  width: 120px;
+}
+
+.timetable th {
+  padding: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+}
+
+.timetable td {
+  border-bottom: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+  vertical-align: top;
+}
+
+.timetable th:last-child,
+.timetable td:last-child {
+  border-right: none;
+}
+
+.timetable tr:last-child td {
+  border-bottom: none;
+}
+
+.timetable tbody tr {
+  height: 1px;
+}
+
+.periodLabel {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  width: 120px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.time {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* Zárolás Modal */
+.lockModal {
+  z-index: 9999;
+}
+
+.lockContent {
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.lockTitle {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lockDescription {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.lockInput {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 12px;
+  font-size: 1rem;
+}
+
+.lockActions {
+  display: flex;
+  gap: 10px;
+}
+
+.lockActionBtn {
+  flex: 1;
+  padding: 10px;
+}

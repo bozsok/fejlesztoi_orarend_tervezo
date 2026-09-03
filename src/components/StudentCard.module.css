@@ -1,0 +1,115 @@
+/* ==============================================================
+   DIÁK KÁRTYA
+============================================================== */
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  cursor: grab;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.cardDragging {
+  opacity: 0.3;
+}
+
+.cardOverlay {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  cursor: grabbing;
+}
+
+.nameContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Diák neve */
+.name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.warningIcon {
+  cursor: help;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulseWarning 2s infinite ease-in-out;
+}
+
+@keyframes pulseWarning {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.6)); }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* Jobb oldal: osztály + óraszám */
+.meta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.classLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.classLabelTag {
+  color: var(--warning-color);
+}
+
+.classLabelNonTag {
+  color: var(--accent-color);
+}
+
+.needs {
+  font-size: 0.85rem;
+}
+
+.cardCompleted {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
+  opacity: 0.85;
+}
+
+.completedTrashBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.completedTrashBtn:hover {
+  color: var(--danger-color);
+  background: rgba(239, 68, 68, 0.15);
+}
