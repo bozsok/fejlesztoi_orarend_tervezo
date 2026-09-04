@@ -27,33 +27,49 @@ export function parseKretaRTF(rtfText) {
 
     for (let i = 1; i <= 5; i++) {
       if (i >= cells.length) break;
+      const day = DAYS[i - 1];
       const cellText = cells[i];
-      
-      // A Kréta a cellán belüli sorokat (Tantárgy, Osztály, Tanár, Terem) \line-al választja el.
-      const lines = cellText.split('\\line').map(l => {
-         // Töröljük a vezérlő kódokat (pl. \qc, \f0, \cf2 stb.)
-         let cleanLine = l.replace(/\\[a-zA-Z0-9-]+[ ]?/g, '').replace(/\{|\}/g, '').trim();
-         // Néha maradnak extra visszajelek vagy szóközök
-         return cleanLine;
+
+      // A cellán belüli sorok tisztítása
+      const rawLines = cellText.split('\\line').map(l => {
+        return l.replace(/\\[a-zA-Z0-9-]+[ ]?/g, '').replace(/\{|\}/g, '').trim();
       }).filter(l => l.length > 0);
 
-      // lines = [ "Matematika", "2.a", "Tanár neve", "Terem" ]
-      if (lines.length >= 2) {
-         let subject = lines[0];
-         let className = lines[1].toLowerCase().trim(); // pl. "2.a"
-         
-         if (subject && className && className.match(/^\d+\.[a-z]$/)) {
-           if (!classesData[className]) classesData[className] = {};
-           if (!classesData[className][DAYS[i-1]]) classesData[className][DAYS[i-1]] = {};
-           
-           // Mentsük az órát
-           classesData[className][DAYS[i-1]][period] = subject;
-           foundClasses.add(className);
-         }
-      }
+      // Elválasztott blokkok képzése (ha több csoport van a cellában, pl. '--------------------')
+      const blocks = [];
+      let currentBlock = [];
+      rawLines.forEach(line => {
+        if (line.includes('---')) {
+          if (currentBlock.length > 0) blocks.push(currentBlock);
+          currentBlock = [];
+        } else {
+          currentBlock.push(line);
+        }
+      });
+      if (currentBlock.length > 0) blocks.push(currentBlock);
+
+      blocks.forEach(block => {
+        if (block.length === 0) return;
+        const subject = block[0];
+        const blockText = block.join(' ');
+
+        // Keresünk minden osztálymintát a blokkban (pl. 8.b, 8.a, 1.c, akár összevonva: 8.a-8.b)
+        const classMatches = blockText.match(/\b([1-8])\.([a-c])\b/gi) || [];
+        const uniqueClasses = [...new Set(classMatches.map(c => c.toLowerCase()))];
+
+        uniqueClasses.forEach(className => {
+          if (!classesData[className]) classesData[className] = {};
+          if (!classesData[className][day]) classesData[className][day] = {};
+
+          // Ha még nincs óra, vagy ez egy testnevelés/elhozható óra, rögzítjük
+          if (!classesData[className][day][period] || subject.toLowerCase().includes('testnevel')) {
+            classesData[className][day][period] = subject;
+            foundClasses.add(className);
+          }
+        });
+      });
     }
   });
 
-  // A próba tanuló (dummy) generálást eltávolítottuk, mert már van dedikált Excel import
   return { classes: classesData };
 }

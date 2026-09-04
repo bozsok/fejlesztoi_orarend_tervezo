@@ -4,7 +4,7 @@ import useStore, { cleanStudentId } from '../store/useStore';
 import { X, Pencil, Check, RotateCcw } from 'lucide-react';
 import styles from './DropZoneCell.module.css';
 
-function EnrolledStudentCard({ student, day, period, onRemove }) {
+function EnrolledStudentCard({ student, day, period, onRemove, sourcePedagogueId }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `enrolled-${student.id}-${day}-${period}`,
     data: {
@@ -12,6 +12,7 @@ function EnrolledStudentCard({ student, day, period, onRemove }) {
       student,
       sourceDay: day,
       sourcePeriod: period,
+      sourcePedagogueId,
     }
   });
 
@@ -43,10 +44,12 @@ function EnrolledStudentCard({ student, day, period, onRemove }) {
 
 export default function DropZoneCell({ day, period, enrolledIds, isLockMode, onLockRequest }) {
   const {
+    pedagogues,
     students,
     classes,
     removeStudent,
     activeStudentId,
+    activePedagogueId,
     canAssignStudent,
     blockedPeriods,
     toggleBlockedPeriod,
@@ -85,11 +88,25 @@ export default function DropZoneCell({ day, period, enrolledIds, isLockMode, onL
   const N = parts.length;
   const sourceDay = isEnrolled ? parts[N - 2] : null;
   const sourcePeriod = isEnrolled ? parseInt(parts[N - 1], 10) : null;
+  const cleanActiveId = cleanStudentId(activeStudentId);
+  const activeStudentObj = students.find(s => String(s.id) === cleanActiveId);
 
-  const isValid = activeStudentId ? canAssignStudent(activeStudentId, day, period, false, {
+  let sourcePedagogueId = null;
+  if (isEnrolled && sourceDay && sourcePeriod) {
+    const foundPed = (pedagogues || []).find(p => 
+      p.timetable?.[sourceDay]?.[sourcePeriod]?.some(id => cleanStudentId(id) === cleanActiveId)
+    );
+    sourcePedagogueId = foundPed ? foundPed.id : (activeStudentObj?.pedagogueId || activePedagogueId);
+  }
+
+  const validationOptions = {
     sourceDay,
-    sourcePeriod
-  }) : false;
+    sourcePeriod,
+    sourcePedagogueId,
+    targetPedagogueId: activePedagogueId
+  };
+
+  const isValid = activeStudentId ? canAssignStudent(activeStudentId, day, period, false, validationOptions) : false;
   
   const cellClasses = [styles.dropZone];
   let activeSubject = null;
@@ -188,17 +205,11 @@ export default function DropZoneCell({ day, period, enrolledIds, isLockMode, onL
   };
 
   const validationError = (activeStudentId && !isValid && isOver)
-    ? getAssignmentValidationError(activeStudentId, day, period, {
-        sourceDay,
-        sourcePeriod
-      })
+    ? getAssignmentValidationError(activeStudentId, day, period, validationOptions)
     : null;
 
   const assignmentWarning = (activeStudentId && isValid && isOver)
-    ? getAssignmentWarning(activeStudentId, day, period, {
-        sourceDay,
-        sourcePeriod
-      })
+    ? getAssignmentWarning(activeStudentId, day, period, validationOptions)
     : null;
 
   return (
@@ -263,6 +274,7 @@ export default function DropZoneCell({ day, period, enrolledIds, isLockMode, onL
                   day={day}
                   period={period}
                   onRemove={handleRemove}
+                  sourcePedagogueId={activePedagogueId}
                 />
               ) : null;
             })}

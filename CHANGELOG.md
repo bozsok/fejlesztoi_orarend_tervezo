@@ -2,6 +2,82 @@
 
 Minden említésre méltó változtatás ebben a projektben (Órarend Tervező) itt kerül dokumentálásra. A projekt szemantikus verziózást (Semantic Versioning) követ.
 
+## [1.7.3] - 2026-09-04
+
+### Javítva
+- **Kereszt-pedagógus naptárközi áthelyezés (Drag & Drop) hibájának elhárítása**:
+  - **Atomi naptárközi áthelyezési művelet (`moveStudentAcrossPedagogues`)**: Új központi Zustand-akció a `src/store/useStore.js` fájlban, amely egyetlen tranzakcióban törli a tanulót a forrás pedagógus adott napi és órai idősávjából, bejegyzi a cél pedagógus célidősávjába, átállítja a tanuló pedagógus-hozzárendelését az új kollégára, valamint szinkronizálja az aktív órarend állapotát. Megszűntek a korábbi többlépéses (`removeStudent` + `assignStudentToPedagogue` + `assignStudent`) széteső állapotfrissítések.
+  - **Stabil húzási adatreferencia (`dragDataRef`) a DOM-unmount védelemhez**: A húzás indításakor (`handleDragStart`) elmentésre kerülnek a tanuló és a forrás idősáv adatai, megelőzve az adatvesztést, amikor a spring-loaded nézetváltás miatt a forráskártya (`EnrolledStudentCard`) törlődik a DOM-ból és a `@dnd-kit` `active.data.current` mezője kiürülne.
+  - **Megbízható forrás pedagógus visszakeresés**: Ha a tanuló nem rendelkezett korábban rögzített pedagógus-hozzárendeléssel (közös tanulói poolból származott), a forrás pedagógus mostantól közvetlenül az órarendi struktúrából (`timetable[sourceDay][sourcePeriod]`) kerül azonosításra, így a cél pedagógusra váltott nézet már nem téveszti meg a forrás meghatározását.
+  - **Célcella lebegtetési validáció és színezés (`DropZoneCell.jsx`)**: A célidősávok lebegtetés alatti vizsgálata (`canAssignStudent`, `getAssignmentValidationError`, `getAssignmentWarning`) mostantól explicit módon a valódi forrás pedagógust (`sourcePedagogueId`) és cél pedagógust (`targetPedagogueId: activePedagogueId`) veszi figyelembe.
+  - **Spring-loaded kollégaváltó időzítő stabilizálása (`PedagogueSelector.jsx`)**: Az `onSelectRef` bevezetésével a kurzormozgások és komponens-újrarenderelések már nem szakítják meg a 300 ms-os automatikus naptárváltási időzítőt.
+
+## [1.7.2] - 2026-09-04
+
+### Javítva
+- **Többpedagógusos fogd és vidd (Drag & Drop) és átrendelés hibáinak elhárítása**:
+  - **Diák átrendelése pedagógusválasztó gombra ejtéssel (`PedagogueDrop`)**: A naptárból vagy a beosztandó listából másik pedagógus gombjára húzott diák mostantól megbízhatóan átkerül a célpedagógushoz (`reassignStudentToPedagogue`), törlődik a korábbi naptárakból, és azonnal megjelenik a célpedagógus „Beosztandó diákok” felületén.
+  - **Naptárból naptárba húzás pedagógusok között**: A más pedagógus naptárába húzott tanuló automatikusan átkerül az új aktív pedagógushoz, a korábbi naptárbejegyzései tisztításra kerülnek, és bekerül az új órarendi cellába.
+  - **Megengedőbb manuális validáció**: A manuális húzás során a pedagógus heti óraszámkerete (`maxTeacherHours`) és a meglévő pedagógus-hozzárendelés már nem blokkolja a beosztást (figyelmeztető sárga sáv jelenik meg a tiltó piros helyett), így a felhasználó szabadon átrendezheti a csoportokat és órákat.
+  - **CSS kódminőség és szabályzatnak való megfelelés**: A `.enrolledStudent.enrolledStudentDragging` szelektor specificitásának növelésével eltávolításra került az összes `!important` a stíluslapokból.
+
+## [1.7.1] - 2026-09-04
+
+### Hozzáadva
+- **Valódi Best Practice CSP (Constraint Satisfaction Problem) ütemező motor (`scheduler.js`)**:
+  - **Évfolyam-arányos kvótavezérlés (Proportional Quota Allocation)**: A 61 heti tanári óra dinamikusan, a valós tanulói igények arányában kerül allokálásra a 8 évfolyam között, megakadályozva a kapacitás-elszívást az 1. és alsós évfolyamok elől.
+  - **Pair-First Gatekeeper (Létrehozási kapu)**: Üres idősávba kizárólag akkor nyílhat új óra, ha azonnal legalább 2 azonos évfolyamú tanuló együttesen beül. Ezzel a módszerrel egyetlen pillanatra sem jön létre 1 fős csoport, és nincs szükség utólagos romboló óratörlésre.
+  - **Dinamikus kapacitás-kiegyensúlyozás (100%-os tanári feltöltés)**: Az új páros órák mindig a legnagyobb arányos órahiánnyal (deficittel) rendelkező pedagógushoz kerülnek, így Povázsony (13), Müllerné (8), Tanácsné (23–24) és Hupka (15–16) heti órakerete teljesül.
+  - **Kétütemű feltöltési modell és Csoportfelezés (Phase 5 Rebalancing)**: Az órák 2–4 fős csoportokkal nyílnak, majd a még szabad tanári kapacitások feltöltésére a nagyobb (4–5 fős) csoportok feleződnek, garantálva a 0 db 1 fős csoportot.
+  - **Iteratív Javítás és Visszalépés (Backtracking / Local Search)**: Diák-áthelyezések és idősáv-cserék a betelt vagy elakadt csoportok feloldására.
+  - **Popup számlálási hiba javítása**: A befejezést jelző modál mostantól a valós 200 tanulói óraigényből vonja le a sikeres órákat (196 sikeres, 4 kimaradt), megszüntetve a megtévesztő 217-es számot.
+
+## [1.7.0] - 2026-09-03
+
+### Hozzáadva
+- **Többpedagógusos architektúra (Multi-Pedagogue Support)**:
+  - Teljes támogatás tetszőleges számú fejlesztőpedagógus párhuzamos kezelésére, független órarendekkel, heti órakerettel (`maxTeacherHours`), egyéni színkódokkal és KRÉTA csoportkódokkal.
+  - Dinamikus pedagógusválasztó fülek a heti naptár felett, gyors pedagógusváltással és terheltségi jelvénnyel.
+  - **Kezdeti beállító varázsló (`PedagogueSetupWizard`)**: Új fejlesztőcsapat beállítását támogató varázslóablak, amely lehetővé teszi a pedagógusok nevének, heti óraszámának és meglévő zárolási adatainak (JSON / TXT) egyéni importálását.
+  - **Pedagóguskezelés a Beállításokban**: A `SettingsModal` felületén új „Pedagógusok” fül a kollégák adatainak szerkesztésére, új pedagógus hozzáadására és törlésére.
+  - **Kereszt-pedagógus áthúzás (Drag & Drop)**: Tanulók zökkenőmentes áthelyezése egyik pedagógus naptárából a másikéba, vagy a közös poolból közvetlenül a kiválasztott pedagógus órájára.
+- **Közös tanulói pool (Shared Student Pool)**:
+  - A beolvasott tanulók kezdetben pedagógus-hozzárendelés nélkül (`pedagogueId: null`) a közös poolba kerülnek.
+  - A tanulói Excel importálás (`excelParser.js`) kibővült az „Óraszám” / „Heti óraszám” oszlop automatikus felismerésével, kiküszöbölve a manuális óraszám-beállítást.
+  - Fejlett pedagógusonkénti szűrés és vizuális állapotjelzés a sidebarban.
+- **Tiszta újratervezési opció (`AutoScheduleChoiceModal`)**:
+  - Az automata tervezés indításakor választható a „Meglévő beosztások törlése és tiszta újratervezés (ajánlott)” lehetőség, amely a friss beállítások (pl. új csoportlétszám) szerint tiszta lappal újraépíti a naptárakat.
+  - Store szintű `clearAllTimetables` metódus az összes naptár kiürítésére és a diákok közös poolba való visszamozgatására.
+
+### Módosítva
+- **7. és 8. óra szigorú beosztási tilalma**:
+  - A fejlesztő foglalkozások kizárólag az 1–6. órákban tarthatók meg: sem manuális áthúzással, sem az automata tervezővel nem osztható be diák a 7. és 8. órákra (`useStore.js`, `scheduler.js`).
+  - A Súgó (`RulesModal.jsx`) szövegezése és a validációs hibaüzenetek teljes mértékben szinkronba kerültek az új szabállyal.
+- **Általános Constraint-First Ütemező Motor (`scheduler.js`)**:
+  - **Szűkösség szerinti rendezés**: A legkötöttebb diákok (pl. felsősök alig néhány heti tesi órával) élveznek elsőbbséget, míg a rugalmasabb alsósok feltöltik a fennmaradó helyeket.
+  - **Top-Down Évfolyam- és Osztály-kohézió (Macro-Matching)**:
+    - Az emberi tervezési elvet követve a motor a közös poolban lévő diákokat nem egyenként, hanem **osztályonként (`classId`)** dolgozza fel.
+    - Egy osztály tanulói egyben kerülnek ahhoz a pedagógushoz, akinek heti kötelező óraszámából még a legnagyobb hiány (deficit) mutatkozik.
+    - Szigorú kapacitásszűrő: betelt naptárú kollégához (`deficit <= 0`) a motor nem rendel új osztályt, megakadályozva a diákok közös poolban rekedését.
+    - **Dinamikus Kapacitás-vezérelt Allokáció (100%-os Pedagógus Órakeret-kitöltés)**:
+      - A 2. fázisban a pedagógus kiválasztása tanulónként dinamikusan frissül a valós hiányzó óraszám (`deficit * 10000`) alapján, megelőzve, hogy egy tanár telítődésekor a többi diák a közös poolban ragadjon.
+      - Eredmény: a hiányban lévő kollégák naptára (Tanácsné 20-ról 24-re, Hupka 12-ről 16-ra) 100%-osan (mind a 61 tanári órára) feltöltődik!
+  - **Kiegyensúlyozott csoportfeltöltés és Zero Single Group garancia (`minGroupSize = 2`)**:
+    - A motor a csoportbővítést részesíti a legmagasabb előnyben (+25 000 pont az 1 fős csoportok 2 fősre alakításáért).
+    - Erős évfolyam- és osztály-kohézió (+20 000 pont), így az azonos osztályok és évfolyamok diákjai nem szóródnak szét a pedagógusok között.
+    - **Szigorú 3. fázis (Zero Single Group Guarantee)**: Az ütemezés után a rendszer átvizsgálja az összes naptárt, a magányos tanulókat automatikusan átülteti az azonos évfolyamú meglévő csoportokba, és egyetlen 1 fős csoportot sem hagy jóvá (ha nem fér csoportba, az óra törlődik).
+  - **Hozzárendelési integritás**: A rendszer kizárólag akkor rendeli hozzá a diákot egy pedagógushoz, ha a naptárába ténylegesen be is tudta írni az óráját. A beoszthatatlan tanulók a közös poolban maradnak, megakadályozva a félrevezető állapotokat.
+
+### Javítva
+- **KRÉTA órarend parser csoportbontás és összevonás (`kretaParser.js`)**:
+  - A korábbi merev regex (`^\d+\.[a-z]$`) lecserélve robusztus al-blokk és összetett osztályazonosító felismerésre (`8.a-8.b csoport`, `---` elválasztók).
+  - A 8.b osztály (és más összevont osztályok) összes testnevelés és szaktárgyi órája hiánytalanul beolvasásra kerül a `.doc` / `.rtf` fájlokból.
+  - Eredmény: a valós 100 tanulós tesztállományon **200 / 200 diák-óra (100.0%)** sikeresen beosztásra kerül.
+- **Export/Import struktúra és Varázsló kompatibilitás**:
+  - A Varázsló és a főmenü importálója mostantól mind a többpedagógusos (`pedagogues: [...]`), mind a hagyományos gyökérszintű (`blockedPeriods: {...}`) mentéseket kezeli.
+  - Közvetlen `.txt` kiterjesztésű JSON órarendtervek beolvasásának támogatása.
+- **ReferenceError hibajavítás**: A hiányzó `maxTeacherHours` változó deklarációjának pótlása a store validációs metódusaiban.
+
 ## [1.6.1] - 2026-08-25
 
 ### Javítva

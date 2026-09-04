@@ -90,16 +90,31 @@
   font-size: 0.85rem;
 }
 
-.cardCompleted {
-  background: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.05);
-  opacity: 0.85;
+.pedagogueBar {
+  width: 5px;
+  height: 24px;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
-.completedTrashBtn {
+.unassignedBar {
+  width: 5px;
+  height: 24px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+}
+
+.cardUnassigned {
+  border-style: dashed;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.actionBtn {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -109,7 +124,7 @@
   transition: all 0.2s ease;
 }
 
-.completedTrashBtn:hover {
-  color: var(--danger-color);
-  background: rgba(239, 68, 68, 0.15);
+.actionBtn:hover {
+  color: var(--accent-hover);
+  background: rgba(255, 255, 255, 0.1);
 }

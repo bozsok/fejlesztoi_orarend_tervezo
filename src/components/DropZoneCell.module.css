@@ -60,11 +60,11 @@
   transition: opacity 0.2s ease, background-color 0.2s ease;
 }
 
-.enrolledStudentDragging {
+.enrolledStudent.enrolledStudentDragging {
   opacity: 0.35;
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px dashed rgba(255, 255, 255, 0.2);
-  color: transparent !important;
+  color: transparent;
 }
 
 .enrolledStudentDragging * {

@@ -1,14 +1,17 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Check, Users, Search, ArrowUpDown } from 'lucide-react';
+import { X, Check, Users, Search, ArrowUpDown, UserCheck } from 'lucide-react';
+import useStore from '../store/useStore';
 import styles from './StudentSelectionModal.module.css';
 
 export default function StudentSelectionModal({ isOpen, onClose, students, onConfirm }) {
+  const { pedagogues } = useStore();
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [activeClassFilter, setActiveClassFilter] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
   const [localStudents, setLocalStudents] = useState([]);
+  const [batchPedagogueId, setBatchPedagogueId] = useState('');
   const mouseDownTargetRef = useRef(null);
 
   // Dinamikusan kigyűjtjük a betöltött diákok osztályait a gyorsszűréshez
@@ -18,16 +21,35 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
     return Array.from(classesSet).sort();
   }, [students]);
 
-  // Amikor a modal megnyílik, alapból senki sincs kijelölve
+  // Amikor a modal megnyílik, beállítjuk a kezdeti diákokat (alapból Közös pool)
   useEffect(() => {
     if (isOpen) {
       setSelectedIds(new Set());
       setSearchTerm('');
       setActiveClassFilter('');
       setSortConfig({ key: 'name', direction: 'asc' });
-      setLocalStudents(students ? JSON.parse(JSON.stringify(students)) : []);
+      setBatchPedagogueId('');
+      
+      const initial = (students || []).map(s => {
+        // Ha az Excelből jött rawPedagogue megnevezés, megpróbáljuk párosítani
+        let matchedPedId = s.pedagogueId || null;
+        if (!matchedPedId && s.rawPedagogue && pedagogues && pedagogues.length > 0) {
+          const rawClean = s.rawPedagogue.trim().toLowerCase();
+          const found = pedagogues.find(p => 
+            p.name.trim().toLowerCase() === rawClean || 
+            String(p.teacherCode).trim() === rawClean
+          );
+          if (found) matchedPedId = found.id;
+        }
+
+        return {
+          ...s,
+          pedagogueId: matchedPedId
+        };
+      });
+      setLocalStudents(initial);
     }
-  }, [isOpen, students]);
+  }, [isOpen, students, pedagogues]);
 
   const sortedAndFilteredStudents = useMemo(() => {
     if (!localStudents) return [];
@@ -61,6 +83,25 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
     }));
   };
 
+  const updateStudentPedagogue = (id, pedId) => {
+    setLocalStudents(prev => prev.map(s => {
+      if (s.id === id) {
+        return { ...s, pedagogueId: pedId };
+      }
+      return s;
+    }));
+  };
+
+  const handleApplyBatchPedagogue = () => {
+    const targetId = batchPedagogueId || null;
+    setLocalStudents(prev => prev.map(s => {
+      if (selectedIds.has(s.id)) {
+        return { ...s, pedagogueId: targetId };
+      }
+      return s;
+    }));
+  };
+
   const handleSort = (key) => {
     setSortConfig(prev => ({
       key,
@@ -79,7 +120,6 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
   };
 
   const selectAll = () => {
-    // Csak a SZŰRT listát jelöli ki (ami épp látszik)
     const newSelection = new Set(selectedIds);
     sortedAndFilteredStudents.forEach(s => newSelection.add(s.id));
     setSelectedIds(newSelection);
@@ -154,6 +194,34 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
             <button className={`btn btn-secondary ${styles.toolbarBtn}`} onClick={deselectAll}>Kijelölés törlése</button>
           </div>
 
+          {/* Csoportos pedagógus beállító sáv (ha több pedagógus van és van kijelölés) */}
+          {pedagogues && pedagogues.length > 1 && selectedIds.size > 0 && (
+            <div className={styles.batchBar}>
+              <span className={styles.batchLabel}>
+                <UserCheck size={16} /> Kijelöltek ({selectedIds.size} fő) pedagógusa:
+              </span>
+              <select
+                className={styles.batchSelect}
+                value={batchPedagogueId}
+                onChange={(e) => setBatchPedagogueId(e.target.value)}
+              >
+                <option value="">-- Közös lista (később rendelem hozzá) --</option>
+                {pedagogues.map((ped) => (
+                  <option key={ped.id} value={ped.id}>
+                    {ped.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className={`btn btn-secondary ${styles.batchBtn}`}
+                onClick={handleApplyBatchPedagogue}
+              >
+                Alkalmaz
+              </button>
+            </div>
+          )}
+
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead className={styles.tableHead}>
@@ -169,13 +237,18 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
                       Osztály {sortConfig.key === 'classId' && <ArrowUpDown size={14} />}
                     </div>
                   </th>
+                  {pedagogues && pedagogues.length > 1 && (
+                    <th className={styles.cellPadding}>Pedagógus</th>
+                  )}
                   <th className={`${styles.cellPadding} ${styles.cellCenter}`}>Heti Óraszám</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedAndFilteredStudents.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className={styles.emptyRow}>Nincs a keresésnek megfelelő diák.</td>
+                    <td colSpan={pedagogues && pedagogues.length > 1 ? 5 : 4} className={styles.emptyRow}>
+                      Nincs a keresésnek megfelelő diák.
+                    </td>
                   </tr>
                 ) : (
                   sortedAndFilteredStudents.map(student => (
@@ -193,6 +266,22 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
                       <td className={styles.cellPadding}>
                         <span className={`badge ${styles.classBadge}`}>{student.classId.toUpperCase()}</span>
                       </td>
+                      {pedagogues && pedagogues.length > 1 && (
+                        <td className={styles.cellPadding} onClick={(e) => e.stopPropagation()}>
+                          <select
+                            className={styles.pedagogueSelect}
+                            value={student.pedagogueId || ''}
+                            onChange={(e) => updateStudentPedagogue(student.id, e.target.value ? e.target.value : null)}
+                          >
+                            <option value="">-- Közös lista --</option>
+                            {pedagogues.map(ped => (
+                              <option key={ped.id} value={ped.id}>
+                                {ped.name}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      )}
                       <td className={`${styles.cellPadding} ${styles.cellCenter}`}>
                         <div className={styles.needsControl}>
                           <button 
@@ -242,3 +331,4 @@ export default function StudentSelectionModal({ isOpen, onClose, students, onCon
 
   return createPortal(modalContent, document.body);
 }
+

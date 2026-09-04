@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Pencil, Lock, Unlock } from 'lucide-react';
 import useStore from '../store/useStore';
 import DropZoneCell from './DropZoneCell';
@@ -8,11 +8,28 @@ const DAYS = ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek'];
 const PERIODS = [1, 2, 3, 4, 5, 6, 7, 8]; // 1-8. óra
 
 export default function TimetableGrid({ isLockMode, setIsLockMode }) {
-  const { timetable, timetableTitle, setTimetableTitle, toggleBlockedPeriod, getTeacherHoursCount, settings } = useStore();
+  const { 
+    timetable, 
+    timetableTitle, 
+    setTimetableTitle, 
+    toggleBlockedPeriod, 
+    getTeacherHoursCount, 
+    settings,
+    pedagogues,
+    activePedagogueId
+  } = useStore();
+
+  const activePed = pedagogues.find(p => p.id === activePedagogueId) || null;
+  const maxHours = activePed?.maxTeacherHours || settings.maxTeacherHours || 24;
+
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState(timetableTitle || 'Írd be a neved, beosztásodat...');
   const [lockPromptData, setLockPromptData] = useState(null);
   const lockMouseDownTargetRef = useRef(null);
+
+  useEffect(() => {
+    setTempTitle(timetableTitle || 'Írd be a neved, beosztásodat...');
+  }, [timetableTitle]);
 
   const currentHours = getTeacherHoursCount();
 
@@ -113,7 +130,7 @@ export default function TimetableGrid({ isLockMode, setIsLockMode }) {
         )}
 
         <div className={styles.teacherHoursBadge}>
-          Heti órák: <strong>{currentHours} / {settings.maxTeacherHours || 24}</strong>
+          Heti órák: <strong>{currentHours} / {maxHours}</strong>
         </div>
 
         <div className={styles.legendArea}>

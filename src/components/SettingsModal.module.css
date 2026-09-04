@@ -1,5 +1,7 @@
 .content {
-  max-width: 480px;
+  max-width: 640px;
+  width: 95%;
+  max-height: 90vh;
 }
 
 .title {
@@ -9,9 +11,59 @@
   color: var(--accent-hover);
 }
 
+/* Fülek fejléc */
+.tabsHeader {
+  display: flex;
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 1.5rem;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+  color: var(--text-primary);
+}
+
+.tabButtonActive {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+  font-weight: 600;
+}
+
 .body {
   padding: 1.5rem;
   font-size: 1rem;
+  overflow-y: auto;
+}
+
+.errorBanner {
+  padding: 0.6rem 0.9rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.generalTab {
+  display: flex;
+  flex-direction: column;
 }
 
 .formGroup {
@@ -76,6 +128,169 @@
   line-height: 1.4;
   margin-top: 0.25rem;
   display: block;
+}
+
+/* Pedagógusok fül */
+.pedagoguesTab {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tabIntroText {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.pedagoguesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pedagogueCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s;
+}
+
+.pedagogueCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pedagogueCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pedagogueHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardColorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pedagogueIndexLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.deleteCardBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.deleteCardBtn:hover {
+  color: var(--danger-color);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cardFieldFlex {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cardFieldSmall {
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cardFieldLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.cardInput {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.45rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cardInput:focus {
+  border-color: var(--accent-color);
+}
+
+.cardInputCenter {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.45rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cardInputCenter:focus {
+  border-color: var(--accent-color);
+}
+
+.orderRadioRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.orderRadioLabel {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.addPedagogueBtn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.85rem;
 }
 
 .footer {

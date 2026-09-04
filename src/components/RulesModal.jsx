@@ -110,7 +110,7 @@ export default function RulesModal({ isOpen, onClose }) {
                   </li>
                   <li><strong>Felső tagozat (5–8. osztály):</strong>
                     <ul>
-                      <li><strong>Kizárólag Testnevelés:</strong> A felső tagozatos tanulók <u>bármely órában</u> (1–8. óra) <strong>kizárólag testnevelés</strong> óráról hozhatók el fejlesztésre. Más tantárgyról (Rajz, Ének stb.) nem engedélyezett az elhozás. A tagozatos/nem tagozatos megkülönböztetés felső tagozaton nem érvényesül.</li>
+                      <li><strong>Kizárólag Testnevelés:</strong> A felső tagozatos tanulók az 1–6. órákban <strong>kizárólag testnevelés</strong> óráról hozhatók el fejlesztésre. Más tantárgyról (Rajz, Ének stb.) nem engedélyezett az elhozás. A tagozatos/nem tagozatos megkülönböztetés felső tagozaton nem érvényesül.</li>
                       <li><strong>Lyukas 5–6. óra (csak manuális):</strong> Ha egy felső tagozatos tanuló <strong>5. vagy 6. órája üres</strong> (lyukas) a Kréta órarendben, a pedagógus <u>manuális húzással</u> beoszthatja fejlesztésre. Az automata tervező nem használja ezeket a sávokat. A beosztáskor sárga figyelmeztetés jelzi, hogy a diák nem rendes tanóráról kerül elhozásra.</li>
                     </ul>
                   </li>
@@ -119,10 +119,11 @@ export default function RulesModal({ isOpen, onClose }) {
               </div>
 
               <div className={styles.ruleSection}>
-                <h3><Info size={18} className="icon-green" /> Időbeli eloszlás</h3>
+                <h3><Info size={18} className="icon-green" /> Időbeli eloszlás és órakerethez tartozó korlátozások</h3>
                 <ul>
+                  <li><strong>7. és 8. óra kizárása:</strong> A 7. és 8. órára <u>szigorúan tilos tanulót beosztani</u>: sem manuális áthúzással, sem az automata tervezővel nem helyezhető ide diák. A fejlesztő foglalkozások kizárólag az <strong>1–6. órákban</strong> tarthatók meg.</li>
                   <li><strong>Különálló napok:</strong> Ha egy diáknak hetente többször is van fejlesztése, azok szigorúan <u>különböző napokra</u> kell, hogy essenek. (Egy napon belül maximum egy alkalom engedélyezett).</li>
-                  <li>Nincs napszaki prioritás (az algoritmus oda osztja be a diákot, ahová a tantárgyi szabályok miatt lehetséges).</li>
+                  <li>Nincs napszaki prioritás (az algoritmus oda osztja be a diákot az 1–6. órák között, ahová a tantárgyi szabályok miatt lehetséges).</li>
                 </ul>
               </div>
 

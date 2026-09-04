@@ -186,7 +186,70 @@
 
 /* Gomb és Tooltip a láblécben */
 .submitBtn {
-  white-space: nowrap !important;
+  white-space: nowrap;
+}
+
+/* Csoportos pedagógus beállító sáv */
+.batchBar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 8px;
+}
+
+.batchLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e0e7ff;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.batchSelect {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.batchSelect option {
+  background: #1e1b4b;
+  color: white;
+}
+
+.batchBtn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.pedagogueSelect {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.825rem;
+  outline: none;
+  cursor: pointer;
+  max-width: 140px;
+}
+
+.pedagogueSelect option {
+  background: #1e1b4b;
+  color: white;
+}
+
+.pedagogueSelect:focus {
+  border-color: var(--accent-color);
 }
 
 .tipTooltipContainer {
@@ -284,8 +347,8 @@
 }
 
 .filterTagActive {
-  background: var(--accent-color) !important;
-  border-color: var(--accent-color) !important;
-  color: white !important;
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }

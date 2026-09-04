@@ -1,9 +1,9 @@
 # Órarend Tervező – Teljes Projekt Elemzés
 
 ## Cél és kontextus
-Fejlesztőpedagógusok számára készült **kliensoldali webalkalmazás** (React + Vite), amely a KRÉTA rendszerből exportált osztályórarendek és tanulói listák alapján segíti a heti fejlesztő órarend összeállítását. Tisztán böngészőben fut, nincs backend.
+Fejlesztőpedagógusok számára készült **kliensoldali webalkalmazás** (React + Vite), amely a KRÉTA rendszerből exportált osztályórarendek és tanulói listák alapján segíti a heti fejlesztő órarend összeállítását több pedagógus számára is. Tisztán böngészőben fut, nincs backend.
 
-**Verzió:** 1.6.1 | **Port:** 3000
+**Verzió:** 1.7.3 | **Port:** 3000
 
 ---
 
@@ -14,7 +14,7 @@ graph TD
   A["index.html"] --> B["main.jsx"]
   B --> C["App.jsx<br>(Fő komponens, DnD kontextus)"]
   C --> D["TimetableGrid.jsx<br>(Naptár rács + zárolás modal)"]
-  C --> E["Sidebar<br>(Diákkártyák listája)"]
+  C --> E["Sidebar<br>(Diákkártyák listája, közös pool)"]
   D --> F["DropZoneCell.jsx<br>(Egyes naptárcellák)"]
   F --> G["EnrolledStudentCard<br>(Beírt diákok kártyái)"]
   E --> H["StudentCard.jsx<br>(Húzható diákkártya)"]
@@ -23,6 +23,9 @@ graph TD
   I --> I2["SettingsModal.jsx"]
   I --> I3["StudentSelectionModal.jsx"]
   I --> I4["ConfirmClearModal.jsx"]
+  I --> I5["PedagogueSetupWizard.jsx"]
+  I --> I6["AutoScheduleChoiceModal.jsx"]
+  I --> I7["ExportPdfModal.jsx"]
   C --> J["Zustand Store<br>(useStore.js)"]
   C --> K["Utils"]
   K --> K1["kretaParser.js"]
@@ -39,23 +42,23 @@ graph TD
 | Fájl | Méret | Felelősség |
 |------|-------|------------|
 | `main.jsx` | 229B | Belépőpont, React root renderelés |
-| `App.jsx` | 23KB | Fő komponens: DndContext, fejléc gombok, fájlkezelés, PDF export, sidebar, modálisok összekapcsolása |
+| `App.jsx` | 29KB | Fő komponens: DndContext, fejléc gombok, pedagógus fülek, fájlkezelés, PDF export, sidebar, modálisok összekapcsolása |
 | `index.css` | 6KB | Globális CSS változók, reset, glassmorphism, gombok, modál alap, tooltip, badge |
-| `App.module.css` | 5KB | App layout, header, sidebar, kapacitás indikátor, scheduler modal |
+| `App.module.css` | 5KB | App layout, header, sidebar, pedagógus tabok, kapacitás indikátor, scheduler modal |
 
 ### Store (`src/store/`)
 
 | Fájl | Méret | Felelősség |
 |------|-------|------------|
-| `useStore.js` | 26KB | **Teljes állapotkezelés** (Zustand): students, classes, timetable, blockedPeriods, settings, validáció, CRUD műveletek |
+| `useStore.js` | 46KB | **Teljes többpedagógusos állapotkezelés** (Zustand): pedagogues, activePedagogueId, students, classes, settings, validáció, CRUD műveletek |
 
 ### Segédeszközök (`src/utils/`)
 
 | Fájl | Méret | Felelősség |
 |------|-------|------------|
-| `kretaParser.js` | 2.5KB | RTF/DOC formátumú KRÉTA órarendek kliensoldali feldolgozása |
-| `excelParser.js` | 1.1KB | XLSX tanulólista (KRÉTA export) feldolgozása: Név (A oszlop) + Osztály (G oszlop) |
-| `scheduler.js` | 5.5KB | Automata ütemező: constraint-based + group-filling heurisztikával |
+| `kretaParser.js` | 3.5KB | RTF/DOC formátumú KRÉTA órarendek kliensoldali feldolgozása al-blokkokkal és összevont osztályokkal (pl. `8.a-8.b csoport`) |
+| `excelParser.js` | 1.8KB | XLSX tanulólista feldolgozása: Név, Osztály és opcionális heti Óraszám oszlopok |
+| `scheduler.js` | 12KB | Automata ütemező: általános Constraint-First és kiegyensúlyozott csoportfeltöltő heurisztika |
 
 ### Komponensek (`src/components/`)
 
@@ -64,10 +67,13 @@ graph TD
 | `TimetableGrid.jsx` | 5×8-as naptár rács (Hétfő–Péntek, 1–8. óra), szerkeszthető cím, zárolás modal, heti óraszám badge |
 | `DropZoneCell.jsx` | Egyetlen naptár cella: droppable zóna, szín-validáció, tooltip, csoportkód szerkesztés |
 | `StudentCard.jsx` | Húzható diákkártya: név, osztály, igény, szűkösségi figyelmeztetés, kuka ikon |
-| `RulesModal.jsx` | Súgó: 3 fül (Feltételek, Szabályok, Algoritmus) |
-| `SettingsModal.jsx` | Beállítások: csoportlétszám, heti max óra, KRÉTA kód, számozási irány |
+| `RulesModal.jsx` | Súgó: 3 fül (Feltételek, Szabályok – 7–8. óra tiltása, Algoritmus) |
+| `SettingsModal.jsx` | Beállítások: csoportlétszám, felülbírálás, pedagógusok fülei és szerkesztése |
 | `StudentSelectionModal.jsx` | Excel importálás utáni diákválasztó: keresés, szűrés, igénybeállítás |
 | `ConfirmClearModal.jsx` | Naptár kiürítés megerősítő dialógus |
+| `PedagogueSetupWizard.jsx` | Kezdeti üdvözlő varázsló: pedagógusok beállítása és órarend/zárolás importálása |
+| `AutoScheduleChoiceModal.jsx` | Automata tervezés indító modal: egyéni vagy globális tervezés, tiszta újratervezési opció |
+| `ExportPdfModal.jsx` | PDF export opciók (aktív pedagógus vagy összes pedagógus) |
 
 ---
 
@@ -75,33 +81,33 @@ graph TD
 
 ```javascript
 {
-  settings: {
-    maxGroupSize: 5,                    // Max létszám egy csoportban
-    allowManualGroupSizeOverride: false, // Manuális felülbírálás
-    maxTeacherHours: 24,                // Pedagógus heti max óra
-    teacherCode: '2',                   // KRÉTA csoportkód előtag
-    groupNamingOrder: 'vertical',       // Számozás iránya
-  },
-  students: [                           // Beosztandó diákok
-    { id: 'excel-1', name: 'Kovács Anna', classId: '3.a', needs: 2 }
+  pedagogues: [                         // Fejlesztőpedagógusok listája
+    {
+      id: 'ped-1',
+      name: 'Minta Klára',
+      teacherCode: '1',                 // KRÉTA csoportkód előtag
+      maxTeacherHours: 24,              // Heti kötelező óraszám
+      groupNamingOrder: 'vertical',
+      timetableTitle: 'Minta Klára, fejlesztőpedagógus',
+      timetable: { 'Hétfő': { 1: ['excel-1', 'excel-2'] } },
+      blockedPeriods: { 'Kedd': { 7: 'Napközi' } },
+      customGroupLabels: { 'Hétfő-1': '1/1' },
+      color: '#6366f1'
+    }
   ],
-  classes: {                            // KRÉTA órarendek
+  activePedagogueId: 'ped-1',           // Jelenleg kiválasztott pedagógus
+  students: [                           // Diákok (közös pool: pedagogueId === null)
+    { id: 'excel-1', name: 'Kovács Anna', classId: '3.a', needs: 2, pedagogueId: 'ped-1' }
+  ],
+  classes: {                            // KRÉTA órarendek osztályonként
     '3.a': {
-      'Hétfő': { 1: 'Matematika', 2: 'Rajz és vizuális kultúra', ... },
-      'Kedd': { ... }
+      'Hétfő': { 1: 'Matematika', 2: 'Testnevelés', ... }
     }
   },
-  timetable: {                          // Beosztott diákok naptára
-    'Hétfő': { 1: ['excel-1', 'excel-3'], 2: [] }
-  },
-  blockedPeriods: {                     // Zárolt idősávok
-    'Hétfő': { 5: 'Napközi', 6: 'Ebédeltetés' }
-  },
-  customGroupLabels: {                  // Felülírt csoportkódok
-    'Hétfő-1': '2/1'
-  },
-  timetableTitle: 'Fejlesztőpedagógus...',
-  activeStudentId: null                 // Éppen húzott diák ID
+  settings: {
+    maxGroupSize: 5,                    // Max létszám egy csoportban
+    allowManualGroupSizeOverride: false // Manuális felülbírálás engedélyezése
+  }
 }
 ```
 
@@ -125,11 +131,12 @@ graph TD
 
 ### Általános korlátok
 
-- **Napi max 1 alkalom** – egy diák naponta csak egyszer vehető ki
+- **7. és 8. óra kizárása** – szigorú tiltás: sem manuálisan, sem automata tervezővel nem osztható be tanuló a 7. és 8. órára (fejlesztés kizárólag az 1–6. órákban tartható)
+- **Napi max 1 alkalom** – egy diák naponta csak egyszer vehető ki (különböző napok kötelezőek)
 - **Évfolyam-egyezés** – automata tiltja a keveredést; manuálisan felülbírálható (sárga figyelmeztetés)
-- **Csoportlétszám** – alapértelmezetten max 5 fő/csoport
-- **Pedagógus heti max óra** – alapértelmezetten 24 (max 26)
-- **Zárolások** – Napközi, Ebédeltetés, Értekezlet, Ügyelet, Helyettesítés
+- **Csoportlétszám** – a beállításokban konfigurálható (alapértelmezetten max 5 fő/csoport)
+- **Pedagógus heti max óra** – pedagógusonként egyénileg beállítható órakeret (max 26)
+- **Zárolások** – Napközi, Ebédeltetés, Értekezlet, Ügyelet, Helyettesítés, Szakkör stb.
 
 ---
 
